@@ -1,32 +1,92 @@
 package com.itv.checkout.service;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.itv.checkout.model.Greeting;
+import com.itv.checkout.model.CartItem;
 import com.itv.checkout.model.Product;
+import com.itv.checkout.repository.ProductRepository;
 
 @Service
 public class CheckoutService {
 	
 	Logger logger = LogManager.getLogger(CheckoutService.class);
 	
-	private final AtomicLong counter = new AtomicLong();
+	@Autowired
+	ProductRepository productRepository;
 	
-	public Greeting getGreeting(String name) {
-		final String template = "Hello, %s";
-		return new Greeting(counter.incrementAndGet(),
-	            String.format(template, name));	
+	public BigDecimal checkout(List<CartItem> items) {
+		BigDecimal total = new BigDecimal(0);
+		//TODO Input and output logs on public methods
+		
+		Map<String, Integer> cartItems = this.calculateQuantity(items);
+		//TODO Get price points based on date?
+		
+		Map<String, Product> pricePoints = productRepository.getProducts();
+		
+		for (Map.Entry<String, Integer> cartItem : cartItems.entrySet()) {
+		    String cartSku = cartItem.getKey();
+		    Integer quantity = cartItem.getValue();
+		    
+		    Product product = pricePoints.get(cartSku);
+		    if (product == null) {
+		    	logger.error(String.format("No price point found for sku: %s", cartSku));
+		    } else {
+		    	logger.info(String.format("Price point found for sku: %s", cartSku));
+		    	BigDecimal subtotal = calculateSubtotal(product, quantity);
+		    	total = total.add(subtotal);
+		    }
+		}
+	
+		logger.info(String.format("Product totals: %s", total.toString()));
+		return total;
 	}
 	
-	public Object checkout(List<Product> products) {
-		//TODO Call to rules engine based on date (perhaps)
-		logger.info("log message");
-		return null;
+	//TODO Is this ok?  Separate class?
+	private BigDecimal calculateSubtotal(Product product, Integer quantity) {
+		logger.info(String.format("Product %s Quantity %s", product.toString(), quantity));
+		double subtotal = 0;
+		
+		int quotient = quantity / product.getQualifier(); 
+		int remainder = quantity % product.getQualifier();
+		
+		if (remainder != 0) {
+			subtotal = subtotal + (remainder * product.getUnitPrice().doubleValue());
+		}
+        
+		if (quotient != 0) {
+			subtotal = subtotal + (quotient * product.getSpecialPrice().doubleValue());
+		}
+        
+        logger.info(String.format("%s at regular price of %s", remainder, product.getUnitPrice().toString()));
+        logger.info(String.format("%s at special price of %s", quotient, product.getSpecialPrice().toString()));
+        logger.info(String.format("Subtotal %s",  subtotal));
+        return new BigDecimal(subtotal);
+	}
+	
+	//TODO Separate class? (Testability)
+	private Map<String, Integer> calculateQuantity(List<CartItem> items) {
+		
+		Map<String, Integer> productTotals = new HashMap<String, Integer>();
+		
+		for (CartItem item: items) {
+			Integer itemQuantity = productTotals.get(item.getSku());
+			
+			if (itemQuantity == null) {
+				itemQuantity = new Integer(1);
+			} else {
+				itemQuantity = itemQuantity + 1;
+			}
+			productTotals.put(item.getSku().toString(), itemQuantity);
+		}
+		return productTotals;
 	}
 	
 }
