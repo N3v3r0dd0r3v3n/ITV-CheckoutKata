@@ -1,4 +1,4 @@
-package cart;
+package com.itv.checkout.model;
 
 public class Greeting {
 	
@@ -10,7 +10,6 @@ public class Greeting {
 		this.content = content;
 	}
 
-	
 	public long getId() {
 		return this.id;
 	}
@@ -18,4 +17,6 @@ public class Greeting {
 	public String getContent() {
 		return this.content;
 	}
+	
+	//TODO toString?
 }
