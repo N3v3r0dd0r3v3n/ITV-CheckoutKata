@@ -1,6 +1,7 @@
 package com.itv.checkout.controller;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -28,7 +29,13 @@ public class CheckoutController {
 	public ResponseEntity<BigDecimal> update(@RequestBody List<CartItem> items) {
 		//TODO Better logging?  e.g. CommonsRequestLoggingFilter looks good!
 		logger.info(String.format("CheckoutController recieved request %s", items));
-		BigDecimal total = checkoutService.checkout(items);
+		
+		List<String> skus = new ArrayList<String>();
+		for (CartItem item: items) {
+			skus.add(item.getSku());
+		}
+		
+		BigDecimal total = checkoutService.checkout(skus);
 		logger.info(String.format("Checkout total: %s", total));
 	    return new ResponseEntity<>(total, HttpStatus.OK);
 	}

@@ -2,38 +2,43 @@ package com.itv.checkout.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertThat;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
-import static org.hamcrest.CoreMatchers.isA;
+
+import com.itv.checkout.model.Product;
 
 public class TestQuantifier {
 	
 	private final String FIRST_SKU = "A";
 	private final String SECOND_SKU = "B";
 	
+	private Quantifier quantifier;
+	
+	@Before
+	public void setup() {
+		quantifier = new Quantifier();
+	}
+	
+	@Test
+	public void Should_Return_EmptyMap_WhenSkuListIsNull() {
+		Map<String, Integer> results = quantifier.calculateQuantity(null);
+		assertTrue(results.isEmpty());
+	}
+		
 	@Test
 	public void Should_Return_EmptyMap_WhenSkuListIsEmpty() {
-		Quantifier quantifier = new Quantifier();
 		Map<String, Integer> results = quantifier.calculateQuantity(new ArrayList<String>());
 		assertTrue(results.isEmpty());
 	}
 
-	@Test
-	public void Should_Return_EmptyMap_WhenSkuListIsNull() {
-		Quantifier quantifier = new Quantifier();
-		Map<String, Integer> results = quantifier.calculateQuantity(null);
-		assertTrue(results.isEmpty());
-	}
-	
 	@Test 
 	public void Should_Return_TwoEntries_WhenTwoSkusSupplied() {
-		Quantifier quantifier = new Quantifier();
 		List<String> skus = new ArrayList<String>();
 		skus.add(FIRST_SKU);
 		skus.add(SECOND_SKU);
@@ -48,7 +53,6 @@ public class TestQuantifier {
 	
 	@Test
 	public void Should_Return_CorrectQuantity_WhenSkuSuppliedMultipleTimes() {
-		Quantifier quantifier = new Quantifier();
 		List<String> skus = new ArrayList<String>();
 		skus.add(FIRST_SKU);
 		skus.add(FIRST_SKU);
@@ -61,7 +65,6 @@ public class TestQuantifier {
 	
 	@Test
 	public void Should_Return_CorrectQuantities_WhenMultipleSkewsSuppliedMultipleTimes() {
-		Quantifier quantifier = new Quantifier();
 		List<String> skus = new ArrayList<String>();
 		skus.add(SECOND_SKU);
 		skus.add(SECOND_SKU);
@@ -76,5 +79,98 @@ public class TestQuantifier {
 		assertEquals(new Integer(2), results.get(FIRST_SKU));
 		assertEquals(new Integer(3), results.get(SECOND_SKU));
 	
+	}
+	
+	@Test
+	public void Should_Return_SubtotalOfZero_WhenNoProductSupplied() {
+		Product product = null;
+		Integer quantity = new Integer(1);
+		BigDecimal expected = new BigDecimal(0);
+		BigDecimal subtotal = quantifier.calculateSubtotal(product, quantity);
+		assertEquals(expected, subtotal);
+	}
+	
+	@Test
+	public void Should_Return_SubtotalOfZero_WhenNoQuantitySupplied() {
+		Product product = new Product();
+		product.setSku("A");
+		product.setUnitPrice(new BigDecimal(50));
+		product.setQualifier(3);
+		product.setSpecialPrice(new BigDecimal(130));
+		
+		Integer quantity = null;
+		BigDecimal expected = new BigDecimal(0);
+		BigDecimal subtotal = quantifier.calculateSubtotal(product, quantity);
+		assertEquals(expected, subtotal);
+	}
+	
+	@Test
+	public void Should_Return_SubtotalOfZero_WhenQuantityLessThan1() {
+		Product product = new Product();
+		product.setSku("A");
+		product.setUnitPrice(new BigDecimal(50));
+		product.setQualifier(3);
+		product.setSpecialPrice(new BigDecimal(130));
+		
+		Integer quantity = new Integer(-1);
+		BigDecimal expected = new BigDecimal(0);
+		BigDecimal subtotal = quantifier.calculateSubtotal(product, quantity);
+		assertEquals(expected, subtotal);
+	}
+	
+	@Test
+	public void Should_Return_UnitPrice_WhenQuantityBelowSpecialPrice() {
+		Product product = new Product();
+		product.setSku("A");
+		product.setUnitPrice(new BigDecimal(50));
+		product.setQualifier(3);
+		product.setSpecialPrice(new BigDecimal(130));
+		
+		Integer quantity = new Integer(1);
+		BigDecimal expected = new BigDecimal(50);
+		BigDecimal subtotal = quantifier.calculateSubtotal(product, quantity);
+		assertEquals(expected, subtotal);
+	}
+	
+	@Test
+	public void Should_Return_SpecialPrice_WhenQuantityEqualsSpecialPrice() {
+		Product product = new Product();
+		product.setSku("A");
+		product.setUnitPrice(new BigDecimal(50));
+		product.setQualifier(3);
+		product.setSpecialPrice(new BigDecimal(130));
+		
+		Integer quantity = new Integer(3);
+		BigDecimal expected = new BigDecimal(130);
+		BigDecimal subtotal = quantifier.calculateSubtotal(product, quantity);
+		assertEquals(expected, subtotal);
+	}
+	
+	@Test
+	public void Should_Return_SpecialPricePlusUnitPrice_WhenQuantityGreaterThanSpecialPriceBy1() {
+		Product product = new Product();
+		product.setSku("A");
+		product.setUnitPrice(new BigDecimal(50));
+		product.setQualifier(3);
+		product.setSpecialPrice(new BigDecimal(130));
+		
+		Integer quantity = new Integer(4);
+		BigDecimal expected = new BigDecimal(180);
+		BigDecimal subtotal = quantifier.calculateSubtotal(product, quantity);
+		assertEquals(expected, subtotal);
+	}
+	
+	@Test
+	public void Should_Return_SpecialPricePlusUnitPrice_WhenMultipleQuantities() {
+		Product product = new Product();
+		product.setSku("A");
+		product.setUnitPrice(new BigDecimal(50));
+		product.setQualifier(3);
+		product.setSpecialPrice(new BigDecimal(130));
+		
+		Integer quantity = new Integer(8);
+		BigDecimal expected = new BigDecimal(360);
+		BigDecimal subtotal = quantifier.calculateSubtotal(product, quantity);
+		assertEquals(expected, subtotal);
 	}
 }
