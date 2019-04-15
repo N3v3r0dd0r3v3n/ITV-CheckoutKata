@@ -23,8 +23,8 @@ public class CheckoutService {
 	ProductRepository productRepository;
 	
 	public BigDecimal checkout(List<CartItem> items) {
+		logger.info(String.format("CheckoutService.checkout: items[%s]", items.toString()));
 		BigDecimal total = new BigDecimal(0);
-		//TODO Input and output logs on public methods
 		
 		Map<String, Integer> cartItems = this.calculateQuantity(items);
 		//TODO Get price points based on date?
@@ -52,26 +52,27 @@ public class CheckoutService {
 	//TODO Is this ok?  Separate class?
 	private BigDecimal calculateSubtotal(Product product, Integer quantity) {
 		logger.info(String.format("Product %s Quantity %s", product.toString(), quantity));
-		double subtotal = 0;
+		BigDecimal subtotal = new BigDecimal(0);
 		
 		int quotient = quantity / product.getQualifier(); 
 		int remainder = quantity % product.getQualifier();
 		
 		if (remainder != 0) {
-			subtotal = subtotal + (remainder * product.getUnitPrice().doubleValue());
+			subtotal = product.getUnitPrice().multiply(new BigDecimal(remainder));
+			//subtotal = subtotal + (remainder * product.getUnitPrice().doubleValue());
 		}
         
 		if (quotient != 0) {
-			subtotal = subtotal + (quotient * product.getSpecialPrice().doubleValue());
+			subtotal = product.getSpecialPrice().multiply(new BigDecimal(quotient));
+			//subtotal = subtotal + (quotient * product.getSpecialPrice().doubleValue());
 		}
         
         logger.info(String.format("%s at regular price of %s", remainder, product.getUnitPrice().toString()));
         logger.info(String.format("%s at special price of %s", quotient, product.getSpecialPrice().toString()));
-        logger.info(String.format("Subtotal %s",  subtotal));
-        return new BigDecimal(subtotal);
+        logger.info(String.format("Subtotal %f",  subtotal));
+        return subtotal;
 	}
 	
-	//TODO Separate class? (Testability)
 	private Map<String, Integer> calculateQuantity(List<CartItem> items) {
 		
 		Map<String, Integer> productTotals = new HashMap<String, Integer>();
