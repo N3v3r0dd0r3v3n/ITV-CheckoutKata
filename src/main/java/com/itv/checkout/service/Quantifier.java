@@ -1,6 +1,5 @@
 package com.itv.checkout.service;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,9 +35,9 @@ public class Quantifier {
 		return productTotals;
 	}
 	
-	public BigDecimal calculateSubtotal(Product product, Integer quantity) {
+	public Integer calculateSubtotal(Product product, Integer quantity) {
 		logger.info(String.format("Quantifier.calculateSubtotal: product[%s] quantity[%s]", product, quantity));
-		BigDecimal subtotal = new BigDecimal(0);
+		Integer subtotal = new Integer(0);
 		
 		if (product != null && quantity != null && quantity > 0) {
 		
@@ -46,16 +45,16 @@ public class Quantifier {
 			int remainder = quantity % product.getQualifier();
 			
 			if (remainder != 0) {
-				subtotal = subtotal.add(product.getUnitPrice().multiply(new BigDecimal(remainder)));
+				subtotal = subtotal + product.getUnitPrice() * remainder;
 			}
 	        
 			if (quotient != 0) {
-				subtotal = subtotal.add(product.getSpecialPrice().multiply(new BigDecimal(quotient)));
+				subtotal = subtotal + product.getSpecialPrice()* quotient;
 			}
 	        
 	        logger.debug(String.format("%s at regular price of %s", remainder, product.getUnitPrice().toString()));
 	        logger.debug(String.format("%s at special price of %s", quotient, product.getSpecialPrice().toString()));
-	        logger.info(String.format("SKU %s subtotal %f",  product.getSku(), subtotal));
+	        logger.info(String.format("SKU %s subtotal %d",  product.getSku(), subtotal));
 		}
         return subtotal;
 	}

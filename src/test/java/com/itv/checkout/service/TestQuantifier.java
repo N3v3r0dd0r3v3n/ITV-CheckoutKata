@@ -3,7 +3,6 @@ package com.itv.checkout.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -85,8 +84,8 @@ public class TestQuantifier {
 	public void Should_Return_SubtotalOfZero_WhenNoProductSupplied() {
 		Product product = null;
 		Integer quantity = new Integer(1);
-		BigDecimal expected = new BigDecimal(0);
-		BigDecimal subtotal = quantifier.calculateSubtotal(product, quantity);
+		Integer expected = new Integer(0);
+		Integer subtotal = quantifier.calculateSubtotal(product, quantity);
 		assertEquals(expected, subtotal);
 	}
 	
@@ -94,13 +93,13 @@ public class TestQuantifier {
 	public void Should_Return_SubtotalOfZero_WhenNoQuantitySupplied() {
 		Product product = new Product();
 		product.setSku("A");
-		product.setUnitPrice(new BigDecimal(50));
+		product.setUnitPrice(50);
 		product.setQualifier(3);
-		product.setSpecialPrice(new BigDecimal(130));
+		product.setSpecialPrice(130);
 		
 		Integer quantity = null;
-		BigDecimal expected = new BigDecimal(0);
-		BigDecimal subtotal = quantifier.calculateSubtotal(product, quantity);
+		Integer expected = new Integer(0);
+		Integer subtotal = quantifier.calculateSubtotal(product, quantity);
 		assertEquals(expected, subtotal);
 	}
 	
@@ -108,13 +107,13 @@ public class TestQuantifier {
 	public void Should_Return_SubtotalOfZero_WhenQuantityLessThan1() {
 		Product product = new Product();
 		product.setSku("A");
-		product.setUnitPrice(new BigDecimal(50));
+		product.setUnitPrice(50);
 		product.setQualifier(3);
-		product.setSpecialPrice(new BigDecimal(130));
+		product.setSpecialPrice(130);
 		
 		Integer quantity = new Integer(-1);
-		BigDecimal expected = new BigDecimal(0);
-		BigDecimal subtotal = quantifier.calculateSubtotal(product, quantity);
+		Integer expected = new Integer(0);
+		Integer subtotal = quantifier.calculateSubtotal(product, quantity);
 		assertEquals(expected, subtotal);
 	}
 	
@@ -122,13 +121,13 @@ public class TestQuantifier {
 	public void Should_Return_UnitPrice_WhenQuantityBelowSpecialPrice() {
 		Product product = new Product();
 		product.setSku("A");
-		product.setUnitPrice(new BigDecimal(50));
+		product.setUnitPrice(50);
 		product.setQualifier(3);
-		product.setSpecialPrice(new BigDecimal(130));
+		product.setSpecialPrice(50);
 		
 		Integer quantity = new Integer(1);
-		BigDecimal expected = new BigDecimal(50);
-		BigDecimal subtotal = quantifier.calculateSubtotal(product, quantity);
+		Integer expected = new Integer(50);
+		Integer subtotal = quantifier.calculateSubtotal(product, quantity);
 		assertEquals(expected, subtotal);
 	}
 	
@@ -136,13 +135,13 @@ public class TestQuantifier {
 	public void Should_Return_SpecialPrice_WhenQuantityEqualsSpecialPrice() {
 		Product product = new Product();
 		product.setSku("A");
-		product.setUnitPrice(new BigDecimal(50));
+		product.setUnitPrice(50);
 		product.setQualifier(3);
-		product.setSpecialPrice(new BigDecimal(130));
+		product.setSpecialPrice(130);
 		
 		Integer quantity = new Integer(3);
-		BigDecimal expected = new BigDecimal(130);
-		BigDecimal subtotal = quantifier.calculateSubtotal(product, quantity);
+		Integer expected = new Integer(130);
+		Integer subtotal = quantifier.calculateSubtotal(product, quantity);
 		assertEquals(expected, subtotal);
 	}
 	
@@ -150,13 +149,13 @@ public class TestQuantifier {
 	public void Should_Return_SpecialPricePlusUnitPrice_WhenQuantityGreaterThanSpecialPriceBy1() {
 		Product product = new Product();
 		product.setSku("A");
-		product.setUnitPrice(new BigDecimal(50));
+		product.setUnitPrice(50);
 		product.setQualifier(3);
-		product.setSpecialPrice(new BigDecimal(130));
+		product.setSpecialPrice(130);
 		
 		Integer quantity = new Integer(4);
-		BigDecimal expected = new BigDecimal(180);
-		BigDecimal subtotal = quantifier.calculateSubtotal(product, quantity);
+		Integer expected = new Integer(180);
+		Integer subtotal = quantifier.calculateSubtotal(product, quantity);
 		assertEquals(expected, subtotal);
 	}
 	
@@ -164,13 +163,13 @@ public class TestQuantifier {
 	public void Should_Return_SpecialPricePlusUnitPrice_WhenMultipleQuantities() {
 		Product product = new Product();
 		product.setSku("A");
-		product.setUnitPrice(new BigDecimal(50));
+		product.setUnitPrice(50);
 		product.setQualifier(3);
-		product.setSpecialPrice(new BigDecimal(130));
+		product.setSpecialPrice(130);
 		
 		Integer quantity = new Integer(8);
-		BigDecimal expected = new BigDecimal(360);
-		BigDecimal subtotal = quantifier.calculateSubtotal(product, quantity);
+		Integer expected = new Integer(360);
+		Integer subtotal = quantifier.calculateSubtotal(product, quantity);
 		assertEquals(expected, subtotal);
 	}
 }

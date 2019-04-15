@@ -1,6 +1,5 @@
 package com.itv.checkout.controller;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +25,7 @@ public class CheckoutController {
 	CheckoutService checkoutService;
 	
 	@RequestMapping(value = "/checkout", method = RequestMethod.POST)
-	public ResponseEntity<BigDecimal> update(@RequestBody List<CartItem> items) {
+	public ResponseEntity<Integer> update(@RequestBody List<CartItem> items) {
 		//TODO Better logging?  e.g. CommonsRequestLoggingFilter looks good!
 		logger.info(String.format("CheckoutController recieved request %s", items));
 		
@@ -35,8 +34,10 @@ public class CheckoutController {
 			skus.add(item.getSku());
 		}
 		
-		BigDecimal total = checkoutService.checkout(skus);
+		Integer total = checkoutService.checkout(skus);
 		logger.info(String.format("Checkout total: %s", total));
+		
+		//TODO Won't be returning an integer.....
 	    return new ResponseEntity<>(total, HttpStatus.OK);
 	}
 }

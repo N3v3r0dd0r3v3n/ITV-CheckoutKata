@@ -1,19 +1,17 @@
 package com.itv.checkout.model;
 
-import java.math.BigDecimal;
-
 public class Product {
 	
 	private String sku;
-	private BigDecimal unitPrice;
+	private Integer unitPrice;
 	private Integer qualifier;
-	private BigDecimal specialPrice;
+	private Integer specialPrice;
 
-	public BigDecimal getUnitPrice() {
+	public Integer getUnitPrice() {
 		return unitPrice;
 	}
 
-	public void setUnitPrice(BigDecimal unitPrice) {
+	public void setUnitPrice(Integer unitPrice) {
 		this.unitPrice = unitPrice;
 	}
 
@@ -33,11 +31,11 @@ public class Product {
 		this.qualifier = qualifier;
 	}
 
-	public BigDecimal getSpecialPrice() {
+	public Integer getSpecialPrice() {
 		return specialPrice;
 	}
 
-	public void setSpecialPrice(BigDecimal specialPrice) {
+	public void setSpecialPrice(Integer specialPrice) {
 		this.specialPrice = specialPrice;
 	}
 

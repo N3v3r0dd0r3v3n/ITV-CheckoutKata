@@ -1,8 +1,5 @@
 package com.itv.checkout.service;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-
 import org.junit.Before;
 import org.junit.Test;
 
