@@ -25,8 +25,8 @@ public class CheckoutController {
 	CheckoutService checkoutService;
 	
 	@RequestMapping(value = "/checkout", method = RequestMethod.POST)
-	public ResponseEntity<Integer> update(@RequestBody List<CartItem> items) {
-		//TODO Better logging?  e.g. CommonsRequestLoggingFilter looks good!
+	public ResponseEntity<Float> checkout(@RequestBody List<CartItem> items) {
+				
 		logger.info(String.format("CheckoutController recieved request %s", items));
 		
 		List<String> skus = new ArrayList<String>();
@@ -34,10 +34,11 @@ public class CheckoutController {
 			skus.add(item.getSku());
 		}
 		
-		Integer total = checkoutService.checkout(skus);
+		Float total = checkoutService.checkout(skus);
 		logger.info(String.format("Checkout total: %s", total));
 		
 		//TODO Won't be returning an integer.....
 	    return new ResponseEntity<>(total, HttpStatus.OK);
 	}
+	
 }

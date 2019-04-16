@@ -21,32 +21,33 @@ public class CheckoutService {
 	
 	@Autowired
 	Quantifier quantifier;
-	
-	public Integer checkout(List<String> items) {
-		logger.info(String.format("CheckoutService.checkout: items[%s]", items.toString()));
-		Integer total = new Integer(0);
-		
-		Map<String, Integer> skuQuantities = quantifier.calculateQuantity(items);
-		//TODO Get price points based on date?
-		
-		Map<String, Product> pricePoints = productRepository.getProducts();
-		
-		for (Map.Entry<String, Integer> skuQuantity : skuQuantities.entrySet()) {
-		    String sku = skuQuantity.getKey();
-		    Integer quantity = skuQuantity.getValue();
-		    
-		    Product product = pricePoints.get(sku);
-		    if (product == null) {
-		    	logger.error(String.format("No price point found for sku: %s", sku));
-		    } else {
-		    	logger.info(String.format("Price point found for sku: %s", sku));
-		    	Integer subtotal = quantifier.calculateSubtotal(product, quantity);
-		    	total = total + subtotal;
-		    }
+
+	public Float checkout(List<String> items) {
+		logger.info(String.format("CheckoutService.checkout: items %s", items));
+		Float total = new Float(0);
+
+		if (items != null && !items.isEmpty()) {
+			Map<String, Integer> skuQuantities = quantifier.calculateQuantity(items);
+			//TODO Get price points based on date?
+			
+			Map<String, Product> pricePoints = productRepository.getCurrentProducts();
+			
+			for (Map.Entry<String, Integer> skuQuantity : skuQuantities.entrySet()) {
+			    String sku = skuQuantity.getKey();
+			    Integer quantity = skuQuantity.getValue();
+			    
+			    Product product = pricePoints.get(sku);
+			    if (product == null) {
+			    	logger.error(String.format("No price point found for sku: %s", sku));
+			    } else {
+			    	logger.info(String.format("Price point found for sku: %s", sku));
+			    	Integer subtotal = quantifier.calculateSubtotal(product, quantity);
+			    	total = total + subtotal;
+			    }
+			}		
 		}
-	
+		total = total / 100;
 		logger.info(String.format("Product totals: %s", total.toString()));
-		//TODO Convert to GBP
 		return total;
 	}	
 }
