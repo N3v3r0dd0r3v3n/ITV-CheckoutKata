@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.itv.checkout.model.CartItem;
 import com.itv.checkout.service.CheckoutService;
 
 @RestController
@@ -25,20 +24,20 @@ public class CheckoutController {
 	CheckoutService checkoutService;
 	
 	@RequestMapping(value = "/checkout", method = RequestMethod.POST)
-	public ResponseEntity<Float> checkout(@RequestBody List<CartItem> items) {
+	public ResponseEntity<Float> checkout(@RequestBody List<String> items) {
 				
 		logger.info(String.format("CheckoutController recieved request %s", items));
 		
+		
 		List<String> skus = new ArrayList<String>();
-		for (CartItem item: items) {
-			skus.add(item.getSku());
+		for (String item: items) {
+			skus.add(item);
 		}
 		
 		Float total = checkoutService.checkout(skus);
 		logger.info(String.format("Checkout total: %s", total));
 		
-		//TODO Won't be returning an integer.....
-	    return new ResponseEntity<>(total, HttpStatus.OK);
+		//TODO Return json perhaps?
+		return new ResponseEntity<>(total, HttpStatus.OK);
 	}
-	
 }
