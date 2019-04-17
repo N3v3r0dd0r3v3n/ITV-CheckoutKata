@@ -29,7 +29,6 @@ public class CheckoutService {
 
 		if (items != null && !items.isEmpty()) {
 			Map<String, Integer> skuQuantities = quantifier.calculateQuantity(items);
-			//TODO Get price points based on date?
 			
 			Map<String, Product> pricePoints = productRepository.getProducts();
 			
