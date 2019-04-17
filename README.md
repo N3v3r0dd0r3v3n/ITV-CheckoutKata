@@ -21,6 +21,8 @@ It expects the body to consist of a JSON array of SKUs, e.g.  ["A",'B"]
 
 As the exercise was is a Checkout Kata I didn't use any persistence, instead using a repository of hardcoded data.  One immediate improvement would be to extract this to an in-memory database.
 
+I modelled different product sets using a date range.  This would allow for a maintenance utility to create additional future product sets, particularly around price changes.  The service currently selects the product set that is active for the current date.  To test the selection of alternative product sets I introduced a simple DateUtil class that simply wraps Calendar.getInstance().getTime() to enable me to mock out the current time during testing.
+
 None of the components have been implemented to an interface.  Should the product be further extended I would extract out interfaces where necessary.
 
 Finally the controller simply returns the total of the cart.  An obvious improvement would be to return a detailed break-down of how the total was reached.
