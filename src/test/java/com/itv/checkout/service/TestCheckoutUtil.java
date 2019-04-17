@@ -12,27 +12,27 @@ import org.junit.Test;
 
 import com.itv.checkout.model.Product;
 
-public class TestQuantifier {
+public class TestCheckoutUtil {
 	
 	private final String FIRST_SKU = "A";
 	private final String SECOND_SKU = "B";
 	
-	private Quantifier quantifier;
+	private CheckoutUtil checkoutUtil;
 	
 	@Before
 	public void setup() {
-		quantifier = new Quantifier();
+		checkoutUtil = new CheckoutUtil();
 	}
 	
 	@Test
 	public void Should_Return_EmptyMap_WhenSkuListIsNull() {
-		Map<String, Integer> results = quantifier.calculateQuantity(null);
+		Map<String, Integer> results = checkoutUtil.calculateQuantity(null);
 		assertTrue(results.isEmpty());
 	}
 		
 	@Test
 	public void Should_Return_EmptyMap_WhenSkuListIsEmpty() {
-		Map<String, Integer> results = quantifier.calculateQuantity(new ArrayList<String>());
+		Map<String, Integer> results = checkoutUtil.calculateQuantity(new ArrayList<String>());
 		assertTrue(results.isEmpty());
 	}
 
@@ -42,7 +42,7 @@ public class TestQuantifier {
 		skus.add(FIRST_SKU);
 		skus.add(SECOND_SKU);
 
-		Map<String, Integer> results = quantifier.calculateQuantity(skus);
+		Map<String, Integer> results = checkoutUtil.calculateQuantity(skus);
 		assertEquals(new Integer(2), (Integer)results.size());
 		assertTrue(results.containsKey(FIRST_SKU));
 		assertTrue(results.containsKey(SECOND_SKU));
@@ -56,7 +56,7 @@ public class TestQuantifier {
 		skus.add(FIRST_SKU);
 		skus.add(FIRST_SKU);
 		
-		Map<String, Integer> results = quantifier.calculateQuantity(skus);
+		Map<String, Integer> results = checkoutUtil.calculateQuantity(skus);
 		assertEquals(1, results.size());
 		assertTrue(results.containsKey(FIRST_SKU));
 		assertEquals(new Integer(2), results.get(FIRST_SKU));
@@ -71,7 +71,7 @@ public class TestQuantifier {
 		skus.add(FIRST_SKU);
 		skus.add(SECOND_SKU);
 		
-		Map<String, Integer> results = quantifier.calculateQuantity(skus);
+		Map<String, Integer> results = checkoutUtil.calculateQuantity(skus);
 		assertEquals(2, results.size());
 		assertTrue(results.containsKey(FIRST_SKU));
 		assertTrue(results.containsKey(SECOND_SKU));
@@ -85,7 +85,7 @@ public class TestQuantifier {
 		Product product = null;
 		Integer quantity = new Integer(1);
 		Integer expected = new Integer(0);
-		Integer subtotal = quantifier.calculateSubtotal(product, quantity);
+		Integer subtotal = checkoutUtil.calculateSubtotal(product, quantity);
 		assertEquals(expected, subtotal);
 	}
 	
@@ -99,7 +99,7 @@ public class TestQuantifier {
 		
 		Integer quantity = null;
 		Integer expected = new Integer(0);
-		Integer subtotal = quantifier.calculateSubtotal(product, quantity);
+		Integer subtotal = checkoutUtil.calculateSubtotal(product, quantity);
 		assertEquals(expected, subtotal);
 	}
 	
@@ -113,7 +113,7 @@ public class TestQuantifier {
 		
 		Integer quantity = new Integer(-1);
 		Integer expected = new Integer(0);
-		Integer subtotal = quantifier.calculateSubtotal(product, quantity);
+		Integer subtotal = checkoutUtil.calculateSubtotal(product, quantity);
 		assertEquals(expected, subtotal);
 	}
 	
@@ -127,7 +127,7 @@ public class TestQuantifier {
 		
 		Integer quantity = new Integer(1);
 		Integer expected = new Integer(50);
-		Integer subtotal = quantifier.calculateSubtotal(product, quantity);
+		Integer subtotal = checkoutUtil.calculateSubtotal(product, quantity);
 		assertEquals(expected, subtotal);
 	}
 	
@@ -141,7 +141,7 @@ public class TestQuantifier {
 		
 		Integer quantity = new Integer(3);
 		Integer expected = new Integer(130);
-		Integer subtotal = quantifier.calculateSubtotal(product, quantity);
+		Integer subtotal = checkoutUtil.calculateSubtotal(product, quantity);
 		assertEquals(expected, subtotal);
 	}
 	
@@ -155,7 +155,7 @@ public class TestQuantifier {
 		
 		Integer quantity = new Integer(4);
 		Integer expected = new Integer(180);
-		Integer subtotal = quantifier.calculateSubtotal(product, quantity);
+		Integer subtotal = checkoutUtil.calculateSubtotal(product, quantity);
 		assertEquals(expected, subtotal);
 	}
 	
@@ -169,7 +169,8 @@ public class TestQuantifier {
 		
 		Integer quantity = new Integer(8);
 		Integer expected = new Integer(360);
-		Integer subtotal = quantifier.calculateSubtotal(product, quantity);
+		Integer subtotal = checkoutUtil.calculateSubtotal(product, quantity);
 		assertEquals(expected, subtotal);
 	}
+	
 }

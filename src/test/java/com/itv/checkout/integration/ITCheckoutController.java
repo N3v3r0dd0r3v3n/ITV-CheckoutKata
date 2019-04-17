@@ -5,9 +5,10 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -24,13 +25,16 @@ import com.itv.checkout.Application;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ITCheckoutController {
-		
+
+	Logger logger = LogManager.getLogger(ITCheckoutController.class);
+	
 	@LocalServerPort
 	private int port;
 	
 	TestRestTemplate restTemplate = new TestRestTemplate();
 	HttpHeaders headers = new HttpHeaders();
-		
+	
+	
 	@Test
 	public void Should_Return_BadRequest_WhenBodyEmpty() throws Exception {
 		headers.add("Content-type", "application/json");
@@ -57,7 +61,7 @@ public class ITCheckoutController {
 	}
 	
 	@Test
-	public void Should_Return_OK_WhenValidBody() throws Exception {
+	public void Should_Return_OK_WhenValidBodyAndCurrentProducts() throws Exception {
 		headers.add("Content-type", "application/json");
 		List<String> skus = new ArrayList<String>();
 		skus.add("B");
@@ -75,9 +79,7 @@ public class ITCheckoutController {
 		//JSONAssert.assertEquals(0.95, response.getBody(), false);	
 		assertEquals(expected, response.getBody());
 	}
-	
-	
-	
+
 	private String createURLWithPort(String uri) {
 		return "http://localhost:" + port + uri;
 	}

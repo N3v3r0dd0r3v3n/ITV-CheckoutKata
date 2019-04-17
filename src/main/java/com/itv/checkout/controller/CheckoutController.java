@@ -37,7 +37,6 @@ public class CheckoutController {
 		Float total = checkoutService.checkout(skus);
 		logger.info(String.format("Checkout total: %s", total));
 		
-		//TODO Return json perhaps?
 		return new ResponseEntity<>(total, HttpStatus.OK);
 	}
 }

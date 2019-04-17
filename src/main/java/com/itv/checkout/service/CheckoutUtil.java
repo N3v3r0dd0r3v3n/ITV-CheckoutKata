@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service;
 import com.itv.checkout.model.Product;
 
 @Service
-public class Quantifier {
+public class CheckoutUtil {
 	
-	Logger logger = LogManager.getLogger(Quantifier.class);
+	Logger logger = LogManager.getLogger(CheckoutUtil.class);
 	
 	public Map<String, Integer> calculateQuantity(List<String> items) {
 		
-		logger.info(String.format("Quantifier.calculateQuantity: items[%s]",items));
+		logger.info(String.format("CheckoutUtil.calculateQuantity: items[%s]",items));
 		Map<String, Integer> productTotals = new HashMap<String, Integer>();
 	
 		if (items != null) {
@@ -36,13 +36,18 @@ public class Quantifier {
 	}
 	
 	public Integer calculateSubtotal(Product product, Integer quantity) {
-		logger.info(String.format("Quantifier.calculateSubtotal: product[%s] quantity[%s]", product, quantity));
+		logger.info(String.format("CheckoutUtil.calculateSubtotal: product[%s] quantity[%s]", product, quantity));
 		Integer subtotal = new Integer(0);
 		
 		if (product != null && quantity != null && quantity > 0) {
-		
-			int quotient = quantity / product.getQualifier(); 
-			int remainder = quantity % product.getQualifier();
+			
+			int quotient = 0;
+			int remainder = 0;
+			
+			if (product.getQualifier() > 0) {
+				quotient = quantity / product.getQualifier(); 
+				remainder = quantity % product.getQualifier();
+			}
 			
 			if (remainder != 0) {
 				subtotal = subtotal + product.getUnitPrice() * remainder;

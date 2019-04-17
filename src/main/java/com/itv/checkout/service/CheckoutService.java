@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.itv.checkout.model.Product;
+import com.itv.checkout.repository.DateUtil;
 import com.itv.checkout.repository.ProductRepository;
 
 @Service
@@ -20,7 +21,7 @@ public class CheckoutService {
 	ProductRepository productRepository;
 	
 	@Autowired
-	Quantifier quantifier;
+	CheckoutUtil quantifier;
 
 	public Float checkout(List<String> items) {
 		logger.info(String.format("CheckoutService.checkout: items %s", items));
@@ -30,7 +31,7 @@ public class CheckoutService {
 			Map<String, Integer> skuQuantities = quantifier.calculateQuantity(items);
 			//TODO Get price points based on date?
 			
-			Map<String, Product> pricePoints = productRepository.getCurrentProducts();
+			Map<String, Product> pricePoints = productRepository.getProducts();
 			
 			for (Map.Entry<String, Integer> skuQuantity : skuQuantities.entrySet()) {
 			    String sku = skuQuantity.getKey();
@@ -49,5 +50,6 @@ public class CheckoutService {
 		total = total / 100;
 		logger.info(String.format("Product totals: %s", total.toString()));
 		return total;
-	}	
+	}
+	
 }

@@ -24,7 +24,7 @@ import com.itv.checkout.repository.ProductRepository;
 public class TestCheckoutService {
 		
 	@Mock
-	Quantifier mockQuantifier;
+	CheckoutUtil mockCheckoutUtil;
 	
 	@Mock
 	ProductRepository mockProductRepository;
@@ -58,8 +58,8 @@ public class TestCheckoutService {
 		
 		Map<String, Integer> quantities = new HashMap<String, Integer>();
 		quantities.put("A", 1);
-		when(mockQuantifier.calculateQuantity(skus)).thenReturn(quantities);
-		when(mockProductRepository.getCurrentProducts()).thenReturn(new HashMap<String, Product>());
+		when(mockCheckoutUtil.calculateQuantity(skus)).thenReturn(quantities);
+		when(mockProductRepository.getProducts()).thenReturn(new HashMap<String, Product>());
 		
 		Float expected = new Float(0);
 		Float total = checkoutService.checkout(skus);
@@ -82,10 +82,10 @@ public class TestCheckoutService {
 		products.put("A", productA);
 		products.put("B", productB);
 		
-		when(mockQuantifier.calculateQuantity(skus)).thenReturn(quantities);
-		when(mockProductRepository.getCurrentProducts()).thenReturn(products);
-		when(mockQuantifier.calculateSubtotal(productA, 1)).thenReturn(5);
-		when(mockQuantifier.calculateSubtotal(productB, 1)).thenReturn(10);
+		when(mockCheckoutUtil.calculateQuantity(skus)).thenReturn(quantities);
+		when(mockProductRepository.getProducts()).thenReturn(products);
+		when(mockCheckoutUtil.calculateSubtotal(productA, 1)).thenReturn(5);
+		when(mockCheckoutUtil.calculateSubtotal(productB, 1)).thenReturn(10);
 		
 		Float expected = new Float(0.15);
 		Float total = checkoutService.checkout(skus);
@@ -110,10 +110,10 @@ public class TestCheckoutService {
 		products.put("A", productA);
 		products.put("B", productB);
 		
-		when(mockQuantifier.calculateQuantity(skus)).thenReturn(quantities);
-		when(mockProductRepository.getCurrentProducts()).thenReturn(products);
-		when(mockQuantifier.calculateSubtotal(productA, 1)).thenReturn(5);
-		when(mockQuantifier.calculateSubtotal(productB, 1)).thenReturn(10);
+		when(mockCheckoutUtil.calculateQuantity(skus)).thenReturn(quantities);
+		when(mockProductRepository.getProducts()).thenReturn(products);
+		when(mockCheckoutUtil.calculateSubtotal(productA, 1)).thenReturn(5);
+		when(mockCheckoutUtil.calculateSubtotal(productB, 1)).thenReturn(10);
 		
 		Float expected = new Float(0.15);
 		Float total = checkoutService.checkout(skus);
